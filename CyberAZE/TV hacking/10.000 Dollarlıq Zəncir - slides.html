@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<title>10.000 Dollarlıq Zəncir</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Patrick+Hand&family=Permanent+Marker&display=swap');
+
+:root{
+  --ink:#14122B;
+  --paper:#FDF6E3;
+  --canvas:#211A4C;
+  --coral:#FF6B6B;
+  --teal:#3EC6BE;
+  --yellow:#FFD93D;
+  --purple:#8C7CF0;
+}
+
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 15% 20%, #2c2266 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, #2c2266 0%, transparent 45%),
+    var(--canvas);
+  font-family:'Patrick Hand', sans-serif;
+  color:var(--ink);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  overflow:hidden;
+}
+
+.deck{
+  position:relative;
+  width:min(94vw, 980px);
+  height:min(78vh, 620px);
+}
+
+.slide{
+  position:absolute;
+  inset:0;
+  background:var(--paper);
+  border:6px solid var(--ink);
+  border-radius:22px;
+  box-shadow:10px 10px 0 var(--ink), 0 0 0 6px var(--paper) inset;
+  padding:26px 34px 20px;
+  display:none;
+  flex-direction:column;
+  transform:rotate(-0.4deg);
+  overflow:hidden;
+}
+.slide.active{display:flex;}
+.slide:nth-child(even){transform:rotate(0.4deg);}
+
+.dots-bg{
+  position:absolute;
+  inset:0;
+  background-image:radial-gradient(var(--ink) 1.4px, transparent 1.4px);
+  background-size:16px 16px;
+  opacity:0.06;
+  pointer-events:none;
+}
+
+.page-tag{
+  position:absolute;
+  top:-16px;
+  left:26px;
+  background:var(--ink);
+  color:var(--paper);
+  font-family:'Permanent Marker', cursive;
+  font-size:13px;
+  padding:5px 14px;
+  border-radius:20px;
+  letter-spacing:1px;
+  transform:rotate(-3deg);
+  z-index:5;
+}
+
+.headline{
+  font-family:'Bangers', cursive;
+  font-size:clamp(28px,4.2vw,44px);
+  letter-spacing:1px;
+  color:var(--ink);
+  margin:14px 0 2px;
+  -webkit-text-stroke:0.6px var(--ink);
+  z-index:2;
+}
+.headline .hl{
+  background:linear-gradient(180deg, transparent 58%, var(--yellow) 58%);
+  padding:0 4px;
+}
+
+.sub{
+  font-size:17px;
+  color:#4a4470;
+  margin:0 0 8px;
+  z-index:2;
+}
+
+.body{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:22px;
+  z-index:2;
+  min-height:0;
+}
+.art{
+  flex:0 0 44%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.art svg{width:100%;height:100%;max-height:280px;}
+
+.notes{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  justify-content:center;
+}
+.note-item{
+  background:#fff;
+  border:3px solid var(--ink);
+  border-radius:12px;
+  padding:10px 14px;
+  font-size:17px;
+  line-height:1.35;
+  box-shadow:4px 4px 0 var(--ink);
+  position:relative;
+}
+.note-item.coral{background:#FFE8E4;}
+.note-item.teal{background:#E4FBF8;}
+.note-item.yellow{background:#FFF7DA;}
+
+.bubble{
+  align-self:flex-start;
+  margin-top:4px;
+  font-family:'Permanent Marker', cursive;
+  font-size:14px;
+  color:#fff;
+  background:var(--coral);
+  padding:6px 14px;
+  border-radius:16px;
+  transform:rotate(-2deg);
+  box-shadow:3px 3px 0 var(--ink);
+}
+
+.footer-strip{
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:10px;
+  border-top:3px dashed var(--ink);
+  padding-top:8px;
+}
+.brand{
+  font-family:'Bangers', cursive;
+  font-size:14px;
+  color:#8b83b8;
+  letter-spacing:2px;
+}
+.pagenum{
+  font-family:'Permanent Marker', cursive;
+  font-size:14px;
+  color:var(--ink);
+}
+
+/* nav */
+.nav{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-top:22px;
+  z-index:10;
+}
+.nav button{
+  font-family:'Bangers', cursive;
+  font-size:18px;
+  letter-spacing:1px;
+  background:var(--yellow);
+  border:4px solid var(--ink);
+  border-radius:12px;
+  padding:8px 20px;
+  cursor:pointer;
+  color:var(--ink);
+  box-shadow:4px 4px 0 var(--ink);
+  transition:transform .08s ease;
+}
+.nav button:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink);}
+.nav button:disabled{opacity:0.35;cursor:not-allowed;}
+.dotsnav{display:flex;gap:7px;}
+.dotsnav span{
+  width:9px;height:9px;border-radius:50%;
+  background:#4a4470;opacity:0.4;cursor:pointer;
+}
+.dotsnav span.on{background:var(--yellow);opacity:1;}
+
+@media (max-width:700px){
+  .body{flex-direction:column;}
+  .art{flex:0 0 40%;}
+  .art svg{max-height:170px;}
+}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck"></div>
+<div class="nav">
+  <button id="prevBtn">◀ GERİ</button>
+  <div class="dotsnav" id="dotsnav"></div>
+  <button id="nextBtn">İRƏLİ ▶</button>
+</div>
+
+<script>
+// ---- reusable mascot & prop SVG snippets ----
+const mascot = (pose='') => `
+<g id="mascot">
+  <ellipse cx="100" cy="185" rx="46" ry="14" fill="#000" opacity="0.08"/>
+  <path d="M60 150 Q60 95 100 95 Q140 95 140 150 L140 175 Q140 190 100 190 Q60 190 60 175 Z" fill="#8C7CF0" stroke="#14122B" stroke-width="4"/>
+  <circle cx="100" cy="80" r="42" fill="#FFDCC2" stroke="#14122B" stroke-width="4"/>
+  <path d="M58 70 Q100 30 142 70 Q142 50 100 42 Q58 50 58 70Z" fill="#8C7CF0" stroke="#14122B" stroke-width="4"/>
+  <rect x="70" y="75" width="24" height="16" rx="8" fill="#fff" stroke="#14122B" stroke-width="3"/>
+  <rect x="106" y="75" width="24" height="16" rx="8" fill="#fff" stroke="#14122B" stroke-width="3"/>
+  <line x1="94" y1="83" x2="106" y2="83" stroke="#14122B" stroke-width="3"/>
+  <circle cx="82" cy="83" r="5" fill="#14122B"/>
+  <circle cx="118" cy="83" r="5" fill="#14122B"/>
+  <path d="M78 105 Q100 118 122 105" stroke="#14122B" stroke-width="4" fill="none" stroke-linecap="round"/>
+</g>`;
+
+const tv = `
+<g id="tv">
+  <rect x="20" y="30" width="160" height="100" rx="10" fill="#2c2a55" stroke="#14122B" stroke-width="5"/>
+  <rect x="34" y="44" width="132" height="72" rx="4" fill="#3EC6BE" stroke="#14122B" stroke-width="3"/>
+  <rect x="80" y="130" width="40" height="18" fill="#2c2a55" stroke="#14122B" stroke-width="4"/>
+  <rect x="55" y="148" width="90" height="10" rx="4" fill="#14122B"/>
+</g>`;
+
+function slideShell(tag, headline, sub, artSVG, notes, bubble){
+  const notesHTML = notes.map(n=>`<div class="note-item ${n.c||''}">${n.t}</div>`).join('');
+  return `
+  <div class="dots-bg"></div>
+  <div class="page-tag">${tag}</div>
+  <h1 class="headline">${headline}</h1>
+  <p class="sub">${sub}</p>
+  <div class="body">
+    <div class="art">${artSVG}</div>
+    <div class="notes">
+      ${notesHTML}
+      ${bubble ? `<div class="bubble">${bubble}</div>` : ''}
+    </div>
+  </div>
+  <div class="footer-strip">
+    <span class="brand">BUG BOUNTY GÜNLÜYÜM</span>
+    <span class="pagenum" data-num></span>
+  </div>`;
+}
+
+// ---------- SLIDE ART ----------
+const art1 = `<svg viewBox="0 0 400 300">
+  ${tv.replace('id="tv"','transform="translate(160,60) scale(1.15)"')}
+  <text x="185" y="95" font-family="Bangers" font-size="30" fill="#FFD93D" stroke="#14122B" stroke-width="1">$$$</text>
+  ${mascot().replace('id="mascot"','transform="translate(10,90) scale(1.05)"')}
+  <path d="M120 150 Q150 120 170 110" stroke="#FFD93D" stroke-width="4" fill="none" stroke-dasharray="6 6"/>
+  <circle cx="60" cy="230" r="4" fill="#FF6B6B"/><circle cx="80" cy="245" r="3" fill="#3EC6BE"/><circle cx="300" cy="230" r="4" fill="#FFD93D"/>
+</svg>`;
+
+const art2 = `<svg viewBox="0 0 400 300">
+  ${mascot().replace('id="mascot"','transform="translate(120,70)")')}
+  <g transform="translate(30,190) rotate(-10)"><rect width="70" height="45" fill="#fff" stroke="#14122B" stroke-width="3"/><text x="8" y="28" font-family="Permanent Marker" font-size="12" fill="#FF6B6B">DUPLICATE</text></g>
+  <g transform="translate(280,60) rotate(12)"><rect width="70" height="45" fill="#fff" stroke="#14122B" stroke-width="3"/><text x="8" y="28" font-family="Permanent Marker" font-size="12" fill="#FF6B6B">DUPLICATE</text></g>
+  <g transform="translate(290,200) rotate(-8)"><rect width="70" height="45" fill="#fff" stroke="#14122B" stroke-width="3"/><text x="8" y="28" font-family="Permanent Marker" font-size="12" fill="#FF6B6B">DUPLICATE</text></g>
+  <g transform="translate(40,60) rotate(6)"><rect width="70" height="45" fill="#fff" stroke="#14122B" stroke-width="3"/><text x="18" y="28" font-family="Permanent Marker" font-size="12" fill="#FF6B6B">P1?</text></g>
+</svg>`;
+
+const art3 = `<svg viewBox="0 0 400 300">
+  <rect x="60" y="40" width="280" height="150" rx="8" fill="#1B1B3A" stroke="#14122B" stroke-width="5"/>
+  <text x="90" y="90" font-family="Permanent Marker" font-size="16" fill="#3EC6BE">RED TEAM</text>
+  <text x="90" y="120" font-family="Permanent Marker" font-size="16" fill="#FF6B6B">vs</text>
+  <text x="90" y="150" font-family="Permanent Marker" font-size="16" fill="#FFD93D">BLUE TEAM</text>
+  ${mascot().replace('id="mascot"','transform="translate(120,180) scale(0.9)"')}
+  <circle cx="290" cy="210" r="16" fill="#FFD93D" stroke="#14122B" stroke-width="3"/>
+  <path d="M290 195 v-6 M303 205 l5-4 M277 205 l-5-4" stroke="#14122B" stroke-width="3"/>
+</svg>`;
+
+const art4 = `<svg viewBox="0 0 400 300">
+  ${mascot().replace('id="mascot"','transform="translate(30,90)"')}
+  <g transform="translate(200,50)">
+    <circle r="55" fill="#3EC6BE" stroke="#14122B" stroke-width="4"/>
+    <circle r="8" fill="#14122B"/>
+    <circle r="55" fill="none" stroke="#14122B" stroke-width="3" stroke-dasharray="2 8"/>
+    <text x="-38" y="75" font-family="Bangers" font-size="16" fill="#fff" stroke="#14122B" stroke-width="0.5">ROBOT AI</text>
+  </g>
+  <text x="120" y="60" font-family="Permanent Marker" font-size="30" fill="#FF6B6B">?</text>
+  <text x="150" y="90" font-family="Permanent Marker" font-size="22" fill="#8C7CF0">?</text>
+</svg>`;
+
+const art5 = `<svg viewBox="0 0 400 300">
+  ${tv.replace('id="tv"','transform="translate(140,50) scale(1.1)"')}
+  <rect x="60" y="200" width="70" height="30" rx="6" fill="#FFD93D" stroke="#14122B" stroke-width="4"/>
+  <rect x="90" y="185" width="10" height="20" fill="#14122B"/>
+  ${mascot().replace('id="mascot"','transform="translate(10,80) scale(0.9)"')}
+  <path d="M120 210 Q150 180 180 140" stroke="#8C7CF0" stroke-width="4" fill="none" stroke-dasharray="5 7"/>
+</svg>`;
+
+const art6 = `<svg viewBox="0 0 400 300">
+  <g transform="translate(60,60)"><rect width="90" height="70" rx="8" fill="#8C7CF0" stroke="#14122B" stroke-width="4"/><text x="14" y="42" font-family="Bangers" font-size="20" fill="#fff">224</text></g>
+  <g transform="translate(220,50)"><rect width="90" height="70" rx="8" fill="#3EC6BE" stroke="#14122B" stroke-width="4"/><text x="18" y="42" font-family="Bangers" font-size="20" fill="#fff">43</text></g>
+  <g transform="translate(140,140) scale(1.2)">
+    <circle cx="20" cy="20" r="20" fill="none" stroke="#14122B" stroke-width="6"/>
+    <line x1="34" y1="34" x2="55" y2="55" stroke="#14122B" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  ${mascot().replace('id="mascot"','transform="translate(20,150) scale(0.75)"')}
+</svg>`;
+
+const art7 = `<svg viewBox="0 0 400 300">
+  <rect x="90" y="40" width="220" height="120" rx="10" fill="#1B1B3A" stroke="#14122B" stroke-width="5"/>
+  <text x="110" y="70" font-family="Permanent Marker" font-size="14" fill="#3EC6BE">api.sendYoutube()</text>
+  <text x="110" y="95" font-family="Permanent Marker" font-size="14" fill="#FFD93D">→ playVideo(url)</text>
+  <text x="110" y="120" font-family="Permanent Marker" font-size="14" fill="#FF6B6B">// auth yoxdur!</text>
+  ${mascot().replace('id="mascot"','transform="translate(30,150) scale(0.85)"')}
+  <circle cx="230" cy="105" r="55" fill="none" stroke="#FFD93D" stroke-width="4"/>
+  <line x1="270" y1="145" x2="300" y2="175" stroke="#FFD93D" stroke-width="8" stroke-linecap="round"/>
+</svg>`;
+
+const art8 = `<svg viewBox="0 0 400 300">
+  <rect x="150" y="60" width="120" height="150" fill="#8C7CF0" stroke="#14122B" stroke-width="5"/>
+  <rect x="190" y="100" width="40" height="45" rx="6" fill="#FFD93D" stroke="#14122B" stroke-width="4"/>
+  <path d="M198 100 v-18 a12 12 0 0 1 24 0 v18" fill="none" stroke="#14122B" stroke-width="5"/>
+  <text x="160" y="50" font-family="Bangers" font-size="18" fill="#FF6B6B">SSL PINNING</text>
+  ${mascot().replace('id="mascot"','transform="translate(10,110) scale(0.85) rotate(4)"')}
+  <path d="M110 190 l30 -10" stroke="#14122B" stroke-width="4"/>
+</svg>`;
+
+const art9 = `<svg viewBox="0 0 400 300">
+  <rect x="150" y="80" width="55" height="70" rx="6" fill="#FFD93D" stroke="#14122B" stroke-width="4" transform="rotate(-18 150 80)"/>
+  <rect x="215" y="80" width="55" height="70" rx="6" fill="#FFD93D" stroke="#14122B" stroke-width="4" transform="rotate(18 270 80)"/>
+  ${mascot().replace('id="mascot"','transform="translate(130,110) scale(1)"')}
+  <circle cx="80" cy="60" r="5" fill="#FF6B6B"/><circle cx="320" cy="70" r="6" fill="#3EC6BE"/>
+  <circle cx="60" cy="200" r="5" fill="#FFD93D"/><circle cx="330" cy="200" r="5" fill="#8C7CF0"/>
+  <text x="130" y="240" font-family="Bangers" font-size="22" fill="#3EC6BE">BURP AÇIQ! 🎉</text>
+</svg>`;
+
+const art200 = `<svg viewBox="0 0 400 300">
+  ${mascot().replace('id="mascot"','transform="translate(30,90) scale(0.95)"')}
+  <g transform="translate(180,80)">
+    <rect width="150" height="95" fill="#fff" stroke="#14122B" stroke-width="4"/>
+    <path d="M0 0 L75 52 L150 0" fill="none" stroke="#14122B" stroke-width="3"/>
+    <text x="14" y="75" font-family="Bangers" font-size="22" fill="#FF6B6B">$200</text>
+    <text x="14" y="90" font-family="Permanent Marker" font-size="11" fill="#8C7CF0">"local şəbəkə · medium"</text>
+  </g>
+</svg>`;
+
+const artScope = `<svg viewBox="0 0 400 300">
+  <g transform="translate(150,20)">
+    <rect width="100" height="65" rx="8" fill="#fff" stroke="#14122B" stroke-width="4"/>
+    <rect width="100" height="14" fill="#8C7CF0" stroke="#14122B" stroke-width="4"/>
+    <text x="18" y="42" font-family="Permanent Marker" font-size="11" fill="#FF6B6B">stored xss</text>
+  </g>
+  <text x="130" y="115" font-family="Bangers" font-size="16" fill="#FFD93D">1. sayta girirsən</text>
+  <path d="M170 105 L70 190" stroke="#FFD93D" stroke-width="3" stroke-dasharray="4 5"/>
+  <path d="M230 105 L330 190" stroke="#FFD93D" stroke-width="3" stroke-dasharray="4 5"/>
+  <path d="M200 105 L200 195" stroke="#FFD93D" stroke-width="3" stroke-dasharray="4 5"/>
+  <g transform="translate(30,190)">${tv.replace('id="tv"','transform="scale(0.55)"')}</g>
+  <g transform="translate(160,205)">${tv.replace('id="tv"','transform="scale(0.55)"')}</g>
+  <g transform="translate(290,190)">${tv.replace('id="tv"','transform="scale(0.55)"')}</g>
+  <text x="60" y="270" font-family="Bangers" font-size="15" fill="#FF6B6B">2. skript lokal şəbəkəni skan edir</text>
+</svg>`;
+
+const artWin = `<svg viewBox="0 0 400 300">
+  ${mascot().replace('id="mascot"','transform="translate(130,40) scale(1.05)"')}
+  <path d="M55 250 l25 -55 M345 250 l-25 -55 M90 30 l18 28 M310 30 l-18 28" stroke="#FFD93D" stroke-width="5" stroke-linecap="round"/>
+  <g transform="translate(150,195)">
+    <path d="M0 30 L50 0 L100 30 L100 75 L0 75 Z" fill="#FFD93D" stroke="#14122B" stroke-width="4"/>
+    <text x="16" y="55" font-family="Bangers" font-size="22" fill="#14122B">10K</text>
+  </g>
+  <circle cx="70" cy="90" r="4" fill="#FF6B6B"/><circle cx="330" cy="100" r="5" fill="#3EC6BE"/>
+  <circle cx="50" cy="150" r="4" fill="#8C7CF0"/><circle cx="345" cy="160" r="4" fill="#FFD93D"/>
+</svg>`;
+
+const art10 = `<svg viewBox="0 0 400 300">
+  ${tv.replace('id="tv"','transform="translate(120,70) scale(1.3)"')}
+  <g transform="translate(60,50)"><circle r="14" fill="#FF6B6B" stroke="#14122B" stroke-width="3"/><text x="-6" y="5" font-size="14">🔊</text></g>
+  <g transform="translate(330,60) scale(1)"><circle r="14" fill="#3EC6BE" stroke="#14122B" stroke-width="3"/><text x="-8" y="5" font-size="13">📷</text></g>
+  <g transform="translate(70,220)"><circle r="14" fill="#FFD93D" stroke="#14122B" stroke-width="3"/><text x="-7" y="5" font-size="13">📺</text></g>
+  <g transform="translate(330,220)"><circle r="14" fill="#8C7CF0" stroke="#14122B" stroke-width="3"/><text x="-8" y="5" font-size="13">📦</text></g>
+</svg>`;
+
+const art11 = `<svg viewBox="0 0 400 300">
+  ${mascot().replace('id="mascot"','transform="translate(140,30) scale(0.85)"')}
+  <line x1="150" y1="130" x2="90" y2="220" stroke="#14122B" stroke-width="2"/>
+  <line x1="190" y1="140" x2="220" y2="220" stroke="#14122B" stroke-width="2"/>
+  ${tv.replace('id="tv"','transform="translate(30,190) scale(0.7)"')}
+  <path d="M100 235 q 40 -25 70 0" stroke="#14122B" stroke-width="2" fill="none"/>
+  <text x="230" y="80" font-family="Bangers" font-size="20" fill="#FF6B6B">RAT</text>
+</svg>`;
+
+const art12 = `<svg viewBox="0 0 400 300">
+  <rect x="150" y="30" width="100" height="70" rx="8" fill="#fff" stroke="#14122B" stroke-width="4"/>
+  <rect x="150" y="30" width="100" height="16" fill="#8C7CF0" stroke="#14122B" stroke-width="4"/>
+  <text x="160" y="60" font-family="Permanent Marker" font-size="12" fill="#FF6B6B">&lt;script&gt;</text>
+  <text x="160" y="78" font-family="Permanent Marker" font-size="12" fill="#3EC6BE">scan(); </text>
+  <path d="M170 105 L70 200" stroke="#FFD93D" stroke-width="3" stroke-dasharray="4 5"/>
+  <path d="M200 105 L200 210" stroke="#FFD93D" stroke-width="3" stroke-dasharray="4 5"/>
+  <path d="M230 105 L330 200" stroke="#FFD93D" stroke-width="3" stroke-dasharray="4 5"/>
+  <g transform="translate(40,200)">${tv.replace('id="tv"','transform="scale(0.55)"')}</g>
+  <g transform="translate(170,215)">${tv.replace('id="tv"','transform="scale(0.55)"')}</g>
+  <g transform="translate(300,200)">${tv.replace('id="tv"','transform="scale(0.55)"')}</g>
+</svg>`;
+
+const art13 = `<svg viewBox="0 0 400 300">
+  ${mascot().replace('id="mascot"','transform="translate(30,80) scale(0.9)"')}
+  <g transform="translate(170,90)">
+    <rect width="130" height="80" fill="#fff" stroke="#14122B" stroke-width="4"/>
+    <path d="M0 0 L65 45 L130 0" fill="none" stroke="#14122B" stroke-width="3"/>
+    <text x="15" y="65" font-family="Bangers" font-size="20" fill="#FF6B6B">$200</text>
+  </g>
+  <text x="200" y="200" font-family="Bangers" font-size="26" fill="#8C7CF0">İSRAR ET! →</text>
+  <g transform="translate(330,60)">
+    <rect width="55" height="40" fill="#FFD93D" stroke="#14122B" stroke-width="4"/>
+    <text x="6" y="27" font-family="Bangers" font-size="22" fill="#14122B">10K</text>
+  </g>
+</svg>`;
+
+const art14 = `<svg viewBox="0 0 400 300">
+  ${mascot().replace('id="mascot"','transform="translate(140,60) scale(1.1)"')}
+  <path d="M60 260 l30 -60 M340 260 l-30 -60 M100 40 l20 30 M300 40 l-20 30" stroke="#FFD93D" stroke-width="5" stroke-linecap="round"/>
+  <g transform="translate(150,205)">
+    <path d="M0 30 L50 0 L100 30 L100 70 L0 70 Z" fill="#FFD93D" stroke="#14122B" stroke-width="4"/>
+    <text x="25" y="55" font-family="Bangers" font-size="22" fill="#14122B">10K</text>
+  </g>
+</svg>`;
+
+const art15 = `<svg viewBox="0 0 400 300">
+  ${mascot().replace('id="mascot"','transform="translate(140,50) scale(1)"')}
+  <g transform="translate(30,190)"><rect width="90" height="14" rx="6" fill="#3EC6BE" stroke="#14122B" stroke-width="3"/><text x="6" y="11" font-size="9" fill="#14122B">Duplicate = normaldır</text></g>
+  <g transform="translate(30,215)"><rect width="90" height="14" rx="6" fill="#FFD93D" stroke="#14122B" stroke-width="3"/><text x="6" y="11" font-size="9" fill="#14122B">AI = mentor</text></g>
+  <g transform="translate(280,190)"><rect width="90" height="14" rx="6" fill="#FF6B6B" stroke="#14122B" stroke-width="3"/><text x="6" y="11" font-size="9" fill="#fff">İsrar et</text></g>
+  <g transform="translate(280,215)"><rect width="90" height="14" rx="6" fill="#8C7CF0" stroke="#14122B" stroke-width="3"/><text x="6" y="11" font-size="9" fill="#fff">Ətraflı PoC yaz</text></g>
+</svg>`;
+
+// ---------- SLIDE DATA ----------
+const slides = [
+ {tag:'SƏHNƏ 01', h:`10.000 <span class="hl">DOLLARLIQ</span> ZƏNCİR`, sub:'Bir zarafatdan başlayan bug bounty macərası', art:art1,
+  notes:[{t:'Bu hekayə sinif otağında kiçik bir zarafat kimi başladı və 10.000 dollarlıq bug bounty ilə bitdi.'},{t:'Bu gün həmin yolu — bütün səhvləri, tıxanmaları və "aha" anlarıyla birlikdə — sizinlə paylaşacağam.'}],
+  bubble:'Salam deyin! 👋'},
+
+ {tag:'SƏHNƏ 02', h:`ƏVVƏLKİ <span class="hl">HƏYATIM</span>`, sub:'Web & API pentestlərdə çox duplicate, az motivasiya', art:art2,
+  notes:[{t:'Uzun müddət yalnız web və API pentestləri ilə məşğul olmuşam.'},{t:'Tapdığım boşluqların demək olar hamısı — P1-dən P5-ə qədər — "duplicate" kimi qayıdırdı.',c:'coral'},{t:'Bir müddət sonra özümdən soruşmağa başladım: mən bacarmıram, yoxsa bu sahə artıq doymuş?'}]},
+
+ {tag:'SƏHNƏ 03', h:`ARA VƏ <span class="hl">YENİ YOL</span>`, sub:'Malware dev, exploit dev və bir kursda dərs demə təcrübəsi', art:art3,
+  notes:[{t:'Yanvar–aprel arası bu sahəyə böyük fasilə verdim.'},{t:'Həmin müddətdə malware development və exploit development üzərinə köçdüm, paralel olaraq bir kursda dərs deyirdim.',c:'teal'},{t:'Kursun tələbə qrupuna red team-in blue team-ə "meydan oxuma" videosu paylaşıldı.'}]},
+
+ {tag:'SƏHNƏ 04', h:`ZARAFAT <span class="hl">BAŞLAYIR</span>`, sub:'"Sadəcə log oxumaq bəs etmir" fikri', art:art4,
+  notes:[{t:'Tələbələrə bunu sözlə deyil, real nümunə ilə göstərmək istədim.'},{t:'Fikir sadə idi: dərs vaxtı TV ekranında "Red Team tərəfindən hacklendiniz" mesajı çıxartmaq.',c:'yellow'},{t:'Problem isə bir o qədər sadə deyildi — TV hacking haqqında heç bir təcrübəm yox idi.'}]},
+
+ {tag:'SƏHNƏ 05', h:`AI İLƏ <span class="hl">İLK ADDIMLAR</span>`, sub:'Gemini Pro ilə başlanğıc, nmap, boş cəhdlər', art:art5,
+  notes:[{t:'Gemini Pro-ya sadə bir sual verdim: "TV-də boşluq tapmaq istəyirəm, heç fikrim yoxdur, necə edim?"'},{t:'Cavab ümumi idi — IP-ni tap, nmap at, açıq servislərə bax.'},{t:'2-3 saat vaxt sərf etdim, əlimdə heç nə qalmadı.',c:'coral'}]},
+
+ {tag:'SƏHNƏ 06', h:`MƏNBƏ <span class="hl">KODU ƏLƏ</span> KEÇİR`, sub:'USB debugger ilə source dump — 20-yə yaxın APK', art:art6,
+  notes:[{t:'Son çarə olaraq USB debugger vasitəsilə TV-nin bütün source kodunu kompüterimə köçürdüm.'},{t:'Qarşımda 20-yə yaxın APK var idi, hansından başlamalı olduğumu bilmirdim.'},{t:'Bu məqamda proqramlaşdırma və code review biliyim işə yaradı.',c:'teal'}]},
+
+ {tag:'SƏHNƏ 07', h:`GİZLİ <span class="hl">ƏMR</span> TAPILIR`, sub:'AI agenti kodu analiz edir: "224 – YouTube video aç"', art:art7,
+  notes:[{t:'AI agentinə promt verdim: bu source kodunu analiz et və uzaqdan video aça biləcəyim bir boşluq tap.'},{t:'Kodun içində 224, 43 kimi nömrələnmiş komandalar tapıldı — video açma, media yükləmə funksiyaları.'},{t:'Ən vacibi: bu komandaların heç birində autentifikasiya tələb olunmurdu.',c:'yellow'}]},
+
+ {tag:'SƏHNƏ 08', h:`SSL PINNING <span class="hl">DİVARI</span>`, sub:'Trafik şifrəli — Burp heç nə görmür', art:art8,
+  notes:[{t:'Komandanın telefondan tam olaraq necə göndərildiyini görmək üçün şəbəkə trafikini tutmaq lazım idi.'},{t:'Tətbiqdə SSL Pinning aktiv idi, Burp-un sertifikatı işləmirdi.'},{t:'Frida ilə bypass etməyə çalışdım, amma bu yolla alınmadı.',c:'coral'}]},
+
+ {tag:'SƏHNƏ 09', h:`DİVAR <span class="hl">UÇUR</span>`, sub:'Community-dən kömək: patched APK', art:art9,
+  notes:[{t:'Discord icmasında sual verdim, biri artıq SSL pinning-i söndürülmüş APK təklif etdi.'},{t:'AI agenti ilə tətbiqi bypass edib yenidən compile etdirdim.',c:'teal'},{t:'Nəhayət Burp-da tam şəffaf trafik — YouTube video açma sorğusu bütün detallarıyla qarşımda idi.'}]},
+
+ {tag:'SƏHNƏ 10', h:`FUNKSİYALAR <span class="hl">AÇILIR</span>`, sub:'Səs, kanal, screenshot, xarici APK yükləmə', art:art10,
+  notes:[{t:'Video açmaqdan başqa daha bir sıra komanda tapıldı: səs idarəsi, kanal dəyişmə, TV-ni söndürmə.'},{t:'Bunlardan biri ekran görüntüsü almaq idi — bu artıq məxfilik riski demək idi.',c:'coral'},{t:'Ən kritiki isə TV-yə xarici bir APK yükləyib onu işə salmaq imkanı oldu.',c:'yellow'}]},
+
+ {tag:'SƏHNƏ 11', h:`RAT <span class="hl">DOĞULUR</span>`, sub:'Sandbox daxilində, amma tam uzaqdan nəzarət', art:art11,
+  notes:[{t:'AI agentinin köməyi ilə sadə funksionallığa malik bir RAT yazıldı.'},{t:'Root icazəsi yox idi, amma normal user səviyyəsində sistem əmrləri işlədilə bilirdi.'},{t:'Nəticə: IP-sini bildiyin istənilən TV-yə uzaqdan APK yükləyib işə sala bilirsən.',c:'coral'}]},
+
+ {tag:'SƏHNƏ 12', h:`İLK CAVAB: <span class="hl">$200</span>`, sub:'Boşluq doğrulanır, amma severity aşağı qalır', art:art200,
+  notes:[{t:'Vendor-a mail atdım, bir həftə sonra cavab gəldi: boşluq təsdiqləndi.'},{t:'Amma hücumun icrası üçün eyni local şəbəkədə olmaq tələb olunduğu üçün "Medium" səviyyəsində qiymətləndirildi.'},{t:'Təklif olunan mükafat: $200 — bu, real potensiala nisbətən çox aşağı görünürdü.',c:'coral'}]},
+
+ {tag:'SƏHNƏ 13', h:`LOKALDAN <span class="hl">ÇIXIRIQ</span>`, sub:'XSS ilə "eyni şəbəkədə olmaq" şərti aradan qalxır', art:artScope,
+  notes:[{t:'$200-lə razılaşmaq əvəzinə, hücumun əhatə dairəsini böyütməyin yolunu axtardım.'},{t:'Brauzerdən JS vasitəsilə local şəbəkəni skan etmək mümkündür — istənilən veb sayt ziyarətçinin şəbəkəsinə "baxa" bilər.'},{t:'İstənilən saytda stored XSS tapılsa, o sayta girən hər kəsin evindəki TV avtomatik hədəfə çevrilir.',c:'yellow'}]},
+
+ {tag:'SƏHNƏ 14', h:`YENİDƏN <span class="hl">BAXILIR</span>: $10.000`, sub:'Ətraflı PoC yeni severity qazandırır', art:artWin,
+  notes:[{t:'Yeni tapılan XSS zəncirini əlavə edərək reportu tam PoC ilə yenidən yazdım.'},{t:'Bu dəfə hücum artıq "local" deyildi — potensial olaraq milyonlarla cihazı əhatə edə bilirdi.',c:'teal'},{t:'Nəticə: maksimum bounty məbləği olan $10.000 təklif edildi.',c:'yellow'}]},
+
+ {tag:'SƏHNƏ 15', h:`SƏNİN <span class="hl">ZƏNCİRİN</span> HANSI OLACAQ?`, sub:'', art:art14,
+  notes:[],
+  bubble:'Sağ olun! Suallarınızı gözləyirəm 🚀'}
+];
+
+// ---------- render ----------
+const deck = document.getElementById('deck');
+slides.forEach((s,i)=>{
+  const div = document.createElement('div');
+  div.className = 'slide' + (i===0?' active':'');
+  div.innerHTML = slideShell(s.tag, s.h, s.sub, s.art, s.notes, s.bubble);
+  deck.appendChild(div);
+});
+
+const dotsnav = document.getElementById('dotsnav');
+slides.forEach((_,i)=>{
+  const d = document.createElement('span');
+  if(i===0) d.className='on';
+  d.addEventListener('click',()=>go(i));
+  dotsnav.appendChild(d);
+});
+
+let cur = 0;
+const total = slides.length;
+function render(){
+  document.querySelectorAll('.slide').forEach((el,i)=>el.classList.toggle('active', i===cur));
+  document.querySelectorAll('.dotsnav span').forEach((el,i)=>el.classList.toggle('on', i===cur));
+  document.querySelectorAll('[data-num]').forEach((el)=>el.textContent = (cur+1)+' / '+total);
+  document.getElementById('prevBtn').disabled = cur===0;
+  document.getElementById('nextBtn').disabled = cur===total-1;
+}
+function go(i){ cur = Math.max(0, Math.min(total-1, i)); render(); }
+document.getElementById('prevBtn').addEventListener('click',()=>go(cur-1));
+document.getElementById('nextBtn').addEventListener('click',()=>go(cur+1));
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight') go(cur+1);
+  if(e.key==='ArrowLeft') go(cur-1);
+});
+render();
+</script>
+</body>
+</html>

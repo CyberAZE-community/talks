@@ -11,6 +11,12 @@ This repository contains slides, code samples, and supporting materials shared d
 - Materials: `CyberAZE/Practical AI/Part 1/`
 - Includes the presentation and Python examples.
 
+### TV Hacking — "Bir gün özümü TV-də tapdım": [YouTube video](https://youtu.be/llDCup0XUR8)
+
+- Speaker: [Elvin Lətifli](https://github.com/Rickidevs)
+- Materials: `CyberAZE/TV hacking/`
+- Includes the presentation ("10.000 Dollarlıq Zəncir", HTML slides).
+
 Each talk is organized in its own directory. Materials may include presentation files, demo code, and small experiments used during the session.
 
 ## Usage
