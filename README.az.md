@@ -8,6 +8,7 @@ Bu repo-da talklarda paylaşdığım slaydlar, kod nümunələri və əlavə mat
 
 ### Praktik AI 1-ci hissə: [YouTube videosu](https://www.youtube.com/watch?v=Y3BaTG-ctvU)
 
+- Spiker: [kthreatt](https://github.com/kthreatt)
 - Materiallar: `CyberAZE/Practical AI/Part 1/`
 - Təqdimat faylı və Python nümunələri daxildir.
 

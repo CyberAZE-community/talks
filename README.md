@@ -8,6 +8,7 @@ This repository contains slides, code samples, and supporting materials shared d
 
 ### Practical AI Part 1: [YouTube video](https://www.youtube.com/watch?v=Y3BaTG-ctvU)
 
+- Speaker: [kthreatt](https://github.com/kthreatt)
 - Materials: `CyberAZE/Practical AI/Part 1/`
 - Includes the presentation and Python examples.
 
